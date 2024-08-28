@@ -1,5 +1,7 @@
 info.php
 app/Config/Database.php
 app/Config/App.php
+writable/debugbar/*
+writable/logs/*.log
 .env
 .idea
