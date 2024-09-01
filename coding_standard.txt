@@ -34,11 +34,11 @@ These include if, for, while, switch, etc. Control statements should have one sp
 to distinguish them from function calls. You are strongly encouraged to always use curly braces even in situations where they are technically optional.
 Eg:
     if ((condition1) || (condition2)) {
-    action1;
+        action1;
     } elseif ((condition3) && (condition4)) {
-    action2;
+        action2;
     } else {
-    default action;
+        default action;
     }
 
 -Function Calls
