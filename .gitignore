@@ -4,5 +4,6 @@ app/Config/App.php
 writable/debugbar/*
 writable/logs/*.log
 writable/*
+.vscode
 .env
 .idea
