@@ -1,0 +1,64 @@
+/*
+ * Hospital Health Information Management System (HHIMS) v4.0
+ * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
+ * GNU General Public License (GPL) version 3
+ * 
+ * Created Date: 28-Aug-2024, 12:22:50 pm
+ * Authors: Dr. Uditha Perera - Consultant in Health Informatics
+ *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
+ * Email: lrh.health.gov.lk@gmail.com
+ * ------------------------------------------------------------------------------------------------------------------
+ * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
+ * provided that the original authors are credited. Commercial use, including selling, licensing, or distributing
+ * the software for a fee, is strictly prohibited without prior written consent from the original authors.
+ * 
+ * This program is free software and is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>
+ * 
+ */
+
+Basic coding standard (based on PSR-1)
+
+-PHP Code Tags
+Always use <?php ?> to delimit PHP code, not the <? ?> shorthand. 
+
+-Indenting and Line Length
+While not recommended in PSR-1, we use the Tab key in VSCode to indent lines. 
+It is recommended to keep lines at approximately 75-85 characters long for better code readability.
+
+-Control Structures
+These include if, for, while, switch, etc. Control statements should have one space between the control keyword and opening parenthesis, 
+to distinguish them from function calls. You are strongly encouraged to always use curly braces even in situations where they are technically optional.
+Eg:
+    if ((condition1) || (condition2)) {
+        action1;
+    } elseif ((condition3) && (condition4)) {
+        action2;
+    } else {
+        default action;
+    }
+
+-Function Calls
+Functions should be called with no spaces between the function name, the opening parenthesis, and the first parameter; 
+spaces between commas and each parameter, and no space between the last parameter, the closing parenthesis, and the semicolon.
+Eg:
+    $var = foo($bar, $baz, $quux);
+
+-Function Definitions
+Function names names MUST be declared in camelCase()
+
+-Variable Names
+Use all lower case letters
+Use '_' as the word separator.
+Global variables should be prepended with a 'g'.
+Global constants should be all caps with '_' separators.
+Static variables should be prepended with 's'.
+
+-Database tablenames
+Database table names should follow the naming convention of variable names. All lower case letters, and '_' as the word separator.
+
+-Database fieldnames
+Database fields should be named in TitleCase. This is different from the camelCase() for fucntion/method names.
