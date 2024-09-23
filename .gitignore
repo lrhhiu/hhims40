@@ -6,3 +6,4 @@ writable/logs/*.log
 writable/*
 .env
 .idea
+.vscode
