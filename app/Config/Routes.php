@@ -21,58 +21,44 @@
  * 
  */
 
+ use CodeIgniter\Router\RouteCollection;
 
-use CodeIgniter\Router\RouteCollection;
+ /**
+  * @var RouteCollection $routes
+  */
+// $routes->get('/', 'Home::index');
 
-/**
- * @var RouteCollection $routes
+ /**
+ * --------------------------------------------------------------------
+ * HMVC Routing
+ * --------------------------------------------------------------------
  */
 
- // root
-$routes->get('/', function() {
-    // Define the full namespace to the Home controller
-    $controller = 'App\Modules\Home\Controllers\Home';
-    return (new $controller())->index();
+// foreach(glob(APPPATH . 'Modules/*', GLOB_ONLYDIR) as $item_dir)
+// {
+//     if (file_exists($item_dir . '/Config/Routes.php'))
+//     {
+//         require_once($item_dir . '/Config/Routes.php');
+//     }    
+// }
+
+$routes = \Config\Services::routes();
+
+$routes->group('', function ($subgroup) {
+    $subgroup->get('/', 'Home::index');
 });
 
-// Route for 1 parameter (e.g., /patient/edit/12345)
-$routes->get('(:segment)/(:segment)/(:any)', function($module, $method, $param1) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1);
-});
+// Load module routes
+$moduleDir = APPPATH . 'Modules';
+$modules = scandir($moduleDir);
 
-// Route for 2 parameters (e.g., /patient/edit/12345/67890)
-$routes->get('(:segment)/(:segment)/(:any)/(:any)', function($module, $method, $param1, $param2) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2);
-});
-
-// Route for 3 parameters (e.g., /lims/order_summary/12345/2024-03-07/2024-04-07)
-$routes->get('(:segment)/(:segment)/(:any)/(:any)/(:any)', function($module, $method, $param1, $param2, $param3) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2, $param3);
-});
-
-// Route for 4 parameters
-$routes->get('(:segment)/(:segment)/(:any)/(:any)/(:any)/(:any)', function($module, $method, $param1, $param2, $param3, $param4) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2, $param3, $param4);
-});
-
-// Route for 5 parameters
-$routes->get('(:segment)/(:segment)/(:any)/(:any)/(:any)/(:any)/(:any)', function($module, $method, $param1, $param2, $param3, $param4, $param5) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2, $param3, $param4, $param5);
-});
-
-// Route for 6 parameters
-$routes->get('(:segment)/(:segment)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)', function($module, $method, $param1, $param2, $param3, $param4, $param5, $param6) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2, $param3, $param4, $param5, $param6);
-});
-
-// Route for 7 parameters
-$routes->get('(:segment)/(:segment)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)', function($module, $method, $param1, $param2, $param3, $param4, $param5, $param6, $param7) {
-    $controller = 'App\Modules\\' . ucfirst($module) . '\Controllers\\' . ucfirst($module);
-    return (new $controller())->$method($param1, $param2, $param3, $param4, $param5, $param6, $param7);
-});
+foreach ($modules as $module) {
+    if ($module !== '.' && $module !== '..') {
+        $modulePath = $moduleDir . DIRECTORY_SEPARATOR . $module;
+        if (is_dir($modulePath)) {
+            $routes->group($module, function ($subgroup) use ($module) {
+                require_once $modulePath . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'Routes.php';
+            });
+        }
+    }
+}
