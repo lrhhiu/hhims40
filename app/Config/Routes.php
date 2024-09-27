@@ -21,34 +21,32 @@
  * 
  */
 
- use CodeIgniter\Router\RouteCollection;
+ namespace Config;
 
- /**
-  * @var RouteCollection $routes
-  */
-// $routes->get('/', 'Home::index');
+use CodeIgniter\Config\BaseConfig;
+use CodeIgniter\Router\RouteCollection;
 
- /**
- * --------------------------------------------------------------------
- * HMVC Routing
- * --------------------------------------------------------------------
+/** 
+ * @var RouteCollection $routes
  */
 
-// foreach(glob(APPPATH . 'Modules/*', GLOB_ONLYDIR) as $item_dir)
-// {
-//     if (file_exists($item_dir . '/Config/Routes.php'))
-//     {
-//         require_once($item_dir . '/Config/Routes.php');
-//     }    
-// }
+$routes = Services::routes();
 
-$routes = \Config\Services::routes();
+// Load the default system routes
+require SYSTEMPATH . 'Config/Routes.php';
 
-$routes->group('', function ($subgroup) {
-    $subgroup->get('/', 'Home::index');
-});
+// Set default controller and method
+$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultController('Home');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
+$routes->setAutoRoute(true);
 
-// Load module routes
+// Load application specific routes
+$routes->get('/', 'Home::index');
+
+// Load module-specific routes
 $moduleDir = APPPATH . 'Modules';
 $modules = scandir($moduleDir);
 
@@ -56,9 +54,11 @@ foreach ($modules as $module) {
     if ($module !== '.' && $module !== '..') {
         $modulePath = $moduleDir . DIRECTORY_SEPARATOR . $module;
         if (is_dir($modulePath)) {
-            $routes->group($module, function ($subgroup) use ($module) {
-                require_once $modulePath . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'Routes.php';
-            });
+            // Ensure the module has a Config/Routes.php file before loading
+            $moduleRouteFile = $modulePath . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'Routes.php';
+            if (file_exists($moduleRouteFile)) {
+                require $moduleRouteFile;
+            }
         }
     }
 }
