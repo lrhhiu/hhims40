@@ -1,10 +1,10 @@
-<?php
+<?php 
 /*
  * Hospital Health Information Management System (HHIMS) v4.0
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
  * 
- * Created Date: 11-Aug-2024, 2:47:07 pm
+ * Created Date: 28-Aug-2024, 12:22:50 pm
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
@@ -21,26 +21,21 @@
  * 
  */
 
- namespace Config;
+ namespace App\Modules\Blog\Controllers;
 
-use CodeIgniter\Config\BaseConfig;
-use CodeIgniter\Router\RouteCollection;
-
-/** 
- * @var RouteCollection $routes
- */
-
- $modulePath = APPPATH . 'Modules/';
- $modules = scandir($modulePath);
+ use App\Controllers\BaseController;
  
- foreach ($modules as $module) {
-     if ($module === '.' || $module === '..') {
-         continue;
-     }
+ class Blog extends BaseController
+ {
+	 public function index()
+	 {
+		 // Load the Blog Model
+		 $blogModel = new \App\Modules\Blog\Models\BlogModel();
  
-     $moduleRoutes = $modulePath . $module . '/Config/Routes.php';
+		 // Get data
+		 $data['posts'] = $blogModel->getPosts();
  
-     if (file_exists($moduleRoutes)) {
-         require $moduleRoutes;
-     }
+		 // Load the view
+		 return view('App\Modules\Blog\Views\blog_index', $data);
+	 }
  }

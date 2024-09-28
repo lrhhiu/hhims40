@@ -1,10 +1,22 @@
 <?php
+namespace App\Modules\Blog\Config;
+
+use CodeIgniter\Router\RouteCollection;
+
+$routes = service('routes');
+
+// Define your routes here for the Blog module
+$routes->group('blog', ['namespace' => 'App\Modules\Blog\Controllers'], function($routes) {
+    $routes->get('/', 'Blog::index'); // Route for the blog index page
+    $routes->get('post/(:num)', 'Blog::view/$1'); // Example for viewing a single post
+});
+
 /*
  * Hospital Health Information Management System (HHIMS) v4.0
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
  * 
- * Created Date: 11-Aug-2024, 2:47:07 pm
+ * Created Date: 27-Sep-2024, 5:20:21 pm
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
@@ -20,27 +32,3 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
-
- namespace Config;
-
-use CodeIgniter\Config\BaseConfig;
-use CodeIgniter\Router\RouteCollection;
-
-/** 
- * @var RouteCollection $routes
- */
-
- $modulePath = APPPATH . 'Modules/';
- $modules = scandir($modulePath);
- 
- foreach ($modules as $module) {
-     if ($module === '.' || $module === '..') {
-         continue;
-     }
- 
-     $moduleRoutes = $modulePath . $module . '/Config/Routes.php';
- 
-     if (file_exists($moduleRoutes)) {
-         require $moduleRoutes;
-     }
- }
