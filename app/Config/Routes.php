@@ -30,35 +30,17 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-$routes = Services::routes();
-
-// Load the default system routes
-require SYSTEMPATH . 'Config/Routes.php';
-
-// Set default controller and method
-$routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
-$routes->setDefaultMethod('index');
-$routes->setTranslateURIDashes(false);
-$routes->set404Override();
-$routes->setAutoRoute(true);
-
-// Load application specific routes
-$routes->get('/', 'Home::index');
-
-// Load module-specific routes
-$moduleDir = APPPATH . 'Modules';
-$modules = scandir($moduleDir);
-
-foreach ($modules as $module) {
-    if ($module !== '.' && $module !== '..') {
-        $modulePath = $moduleDir . DIRECTORY_SEPARATOR . $module;
-        if (is_dir($modulePath)) {
-            // Ensure the module has a Config/Routes.php file before loading
-            $moduleRouteFile = $modulePath . DIRECTORY_SEPARATOR . 'Config' . DIRECTORY_SEPARATOR . 'Routes.php';
-            if (file_exists($moduleRouteFile)) {
-                require $moduleRouteFile;
-            }
-        }
-    }
-}
+ $modulePath = APPPATH . 'Modules/';
+ $modules = scandir($modulePath);
+ 
+ foreach ($modules as $module) {
+     if ($module === '.' || $module === '..') {
+         continue;
+     }
+ 
+     $moduleRoutes = $modulePath . $module . '/Config/Routes.php';
+ 
+     if (file_exists($moduleRoutes)) {
+         require $moduleRoutes;
+     }
+ }
