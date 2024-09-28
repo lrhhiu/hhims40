@@ -25,7 +25,7 @@
 
  use App\Controllers\BaseController;
  
- class Blog extends BaseController
+ class BlogController extends BaseController
  {
 	 public function index()
 	 {

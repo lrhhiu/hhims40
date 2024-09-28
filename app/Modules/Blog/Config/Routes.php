@@ -7,8 +7,8 @@ $routes = service('routes');
 
 // Define your routes here for the Blog module
 $routes->group('blog', ['namespace' => 'App\Modules\Blog\Controllers'], function($routes) {
-    $routes->get('/', 'Blog::index'); // Route for the blog index page
-    $routes->get('post/(:num)', 'Blog::view/$1'); // Example for viewing a single post
+    $routes->get('/', 'BlogController::index'); // Route for the blog index page
+    $routes->get('post/(:num)', 'BlogController::view/$1'); // Example for viewing a single post
 });
 
 /*
