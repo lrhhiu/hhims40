@@ -81,4 +81,11 @@ class Modules extends BaseModules
         'routes',
         'services',
     ];
+    
+    public function getModuleNamespace()
+    {
+        $moduleName = service('request')->uri->getSegment(1);
+        return 'App\Modules\\' . $moduleName . '\\Views';
+    }
+    
 }
