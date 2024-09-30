@@ -52,54 +52,69 @@
 
 if (!function_exists('load_view')) {
     /**
-     * Loads a view from the current module.
+     * Loads a view, either from the current module or another specified module.
      *
-     * @param string $view The view name.
+     * @param string $view The view name. Can be prefixed with a module name (e.g., 'ModuleName/ViewName').
      * @param array|null $data The data to pass to the view.
      * @param array|null $options Additional options for the view.
      * @return mixed The view output.
      */
     function load_view($view, $data = null, $options = null)
     {
-        // Get the caller's namespace to detect the current module
-        $trace = debug_backtrace();
+        // Check if the view belongs to another module by looking for a forward slash
+        if (strpos($view, '/') !== false) {
+            // Split the module name and the view name
+            list($module, $viewName) = explode('/', $view);
+            
+            // Construct the full path for the view (e.g., 'App\Modules\Admission\Views\viewName')
+            $viewPath = 'App\Modules\\' . ucfirst($module) . '\Views\\' . $viewName;
+        } else {
+            // Get the caller's namespace to detect the current module
+            $trace = debug_backtrace();
+            $moduleNamespace = get_module_namespace($trace);
 
-        // Get the full module namespace
-        $moduleNamespace = get_module_namespace($trace);
-
-        // Construct the full path for the view based on the module namespace
-        $viewPath = $moduleNamespace . '\Views\\' . $view;
+            // Construct the full path for the current module's view
+            $viewPath = $moduleNamespace . '\Views\\' . $view;
+        }
 
         // Call the default CI4 view() function with the constructed path
         return view($viewPath, $data, $options);
     }
 }
 
+
 if (!function_exists('load_model')) {
     /**
-     * Loads a model from the current module.
+     * Loads a model, either from the current module or another specified module.
      *
-     * @param string $model The model name.
-     * @param string|null $alias An optional alias to refer to the model.
+     * @param string $model The model name. Can be prefixed with a module name (e.g., 'ModuleName/ModelName').
+     * @param string|null $alias An optional alias to refer to the model in the caller's context.
      * @return object The model instance.
      */
     function load_model($model, $alias = null)
     {
-        // Get the caller's namespace to detect the current module
-        $trace = debug_backtrace();
+        // Check if the model belongs to another module by looking for a forward slash
+        if (strpos($model, '/') !== false) {
+            // Split the module name and the model name
+            list($module, $modelName) = explode('/', $model);
+            
+            // Construct the full namespace for the model (e.g., 'App\Modules\Admission\Models\AdmissionModel')
+            $modelNamespace = 'App\Modules\\' . ucfirst($module) . '\Models\\' . ucfirst($modelName);
+        } else {
+            // Get the caller's namespace to detect the current module
+            $trace = debug_backtrace();
+            $moduleNamespace = get_module_namespace($trace);
 
-        // Get the full module namespace
-        $moduleNamespace = get_module_namespace($trace);
-
-        // Construct the full model namespace (e.g., App\Modules\Login\Models\Mopd)
-        $modelNamespace = $moduleNamespace . '\Models\\' . ucfirst($model);
+            // Construct the full namespace for the current module's model (e.g., 'App\Modules\Login\Models\UserModel')
+            $modelNamespace = $moduleNamespace . '\Models\\' . ucfirst($model);
+        }
 
         // Load the model instance using CI4's model() function
         $modelInstance = model($modelNamespace);
 
-        // If no alias is provided, use the model name as the alias
+        // If no alias is provided, use the model name (or last part) as the alias
         if (is_null($alias)) {
-            $alias = $model;
+            $alias = basename($modelNamespace);
         }
 
         // Assign the model instance to the calling controller/object
