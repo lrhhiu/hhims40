@@ -20,24 +20,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
-if (!function_exists('load_view')) {
+
+ if (!function_exists('get_module_namespace')) {
     /**
-     * Load a view from the current module
-     * 
-     * @param string $view The name of the view file (relative to the module's Views folder)
-     * @param array|null $data Data to pass to the view
-     * @param array|null $options Additional options for rendering the view
-     * @return string Rendered view
+     * Detects the namespace for the current module.
+     *
+     * @param array $trace The backtrace from debug_backtrace.
+     * @return string The detected module namespace.
      */
-    function load_view($view, $data = null, $options = null)
+    function get_module_namespace($trace)
     {
-        // Get the caller's namespace to detect the current module
-        $trace = debug_backtrace();
+        // Get the caller's class from the backtrace
         $callerClass = $trace[1]['class'];
 
-        // Get the module's namespace (e.g., App\Modules\Login\Controllers\LoginController)
+        // Get the module's namespace parts (e.g., App\Modules\Login\Controllers\LoginController)
         $namespaceParts = explode('\\', $callerClass);
-        
+
         // Detect the module name by getting the second part (after App\Modules)
         if (isset($namespaceParts[2]) && strtolower($namespaceParts[1]) === 'modules') {
             $moduleName = $namespaceParts[2];
@@ -46,32 +44,67 @@ if (!function_exists('load_view')) {
             $moduleName = 'App';
         }
 
+        // Construct the full module namespace
+        return 'App\Modules\\' . $moduleName;
+    }
+}
+
+
+if (!function_exists('load_view')) {
+    /**
+     * Loads a view from the current module.
+     *
+     * @param string $view The view name.
+     * @param array|null $data The data to pass to the view.
+     * @param array|null $options Additional options for the view.
+     * @return mixed The view output.
+     */
+    function load_view($view, $data = null, $options = null)
+    {
+        // Get the caller's namespace to detect the current module
+        $trace = debug_backtrace();
+
+        // Get the full module namespace
+        $moduleNamespace = get_module_namespace($trace);
+
         // Construct the full path for the view based on the module namespace
-        $viewPath = 'App\Modules\\' . $moduleName . '\Views\\' . $view;
+        $viewPath = $moduleNamespace . '\Views\\' . $view;
 
         // Call the default CI4 view() function with the constructed path
         return view($viewPath, $data, $options);
     }
+}
 
-    if (!function_exists('load_model')) {
-        /**
-         * Helper to load a model from the current module.
-         *
-         * @param string $modelName The name of the model.
-         * @param bool $shared Whether the model should be a shared instance (singleton).
-         * @return object The loaded model instance.
-         */
-        function load_model($modelName, $shared = true)
-        {
-            // Get the current module namespace
-            $moduleNamespace = config('Modules')->getModuleNamespace();
-    
-            // Build the model's full namespace
-            $modelNamespace = $moduleNamespace . '\\Models\\' . $modelName;
-    
-            // Load the model using the appropriate CodeIgniter model loading mechanism
-            return model($modelNamespace, $shared);
+if (!function_exists('load_model')) {
+    /**
+     * Loads a model from the current module.
+     *
+     * @param string $model The model name.
+     * @param string|null $alias An optional alias to refer to the model.
+     * @return object The model instance.
+     */
+    function load_model($model, $alias = null)
+    {
+        // Get the caller's namespace to detect the current module
+        $trace = debug_backtrace();
+
+        // Get the full module namespace
+        $moduleNamespace = get_module_namespace($trace);
+
+        // Construct the full model namespace (e.g., App\Modules\Login\Models\Mopd)
+        $modelNamespace = $moduleNamespace . '\Models\\' . ucfirst($model);
+
+        // Load the model instance using CI4's model() function
+        $modelInstance = model($modelNamespace);
+
+        // If no alias is provided, use the model name as the alias
+        if (is_null($alias)) {
+            $alias = $model;
         }
+
+        // Assign the model instance to the calling controller/object
+        $trace[1]['object']->$alias = $modelInstance;
+
+        return $modelInstance;
     }
-    
 }
