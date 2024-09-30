@@ -20,7 +20,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
-if (!function_exists('module_view')) {
+if (!function_exists('load_view')) {
     /**
      * Load a view from the current module
      * 
@@ -52,4 +52,26 @@ if (!function_exists('module_view')) {
         // Call the default CI4 view() function with the constructed path
         return view($viewPath, $data, $options);
     }
+
+    if (!function_exists('load_model')) {
+        /**
+         * Helper to load a model from the current module.
+         *
+         * @param string $modelName The name of the model.
+         * @param bool $shared Whether the model should be a shared instance (singleton).
+         * @return object The loaded model instance.
+         */
+        function load_model($modelName, $shared = true)
+        {
+            // Get the current module namespace
+            $moduleNamespace = config('Modules')->getModuleNamespace();
+    
+            // Build the model's full namespace
+            $modelNamespace = $moduleNamespace . '\\Models\\' . $modelName;
+    
+            // Load the model using the appropriate CodeIgniter model loading mechanism
+            return model($modelNamespace, $shared);
+        }
+    }
+    
 }
