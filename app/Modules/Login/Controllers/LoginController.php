@@ -31,7 +31,7 @@ class LoginController extends BaseController
     public function index()
     {
         // Load login form
-        return view('App\Modules\Login\Views\login_form');
+        return load_view('login_form');
     }
 
     public function authenticate()
@@ -55,7 +55,7 @@ class LoginController extends BaseController
 
     public function forgotPasswordForm()
     {
-        return view('App\Modules\Login\Views\forgot_password_form');
+        return load_view('forgot_password_form');
     }
 
     public function sendResetLink()
@@ -79,7 +79,7 @@ class LoginController extends BaseController
     public function resetPasswordForm($token)
     {
         // Load reset password form with the token
-        return view('App\Modules\Login\Views\reset_password_form', ['token' => $token]);
+        return view('reset_password_form', ['token' => $token]);
     }
 
     public function resetPassword()
