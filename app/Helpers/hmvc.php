@@ -21,10 +21,35 @@
  * 
  */
 if (!function_exists('module_view')) {
-    function module_view($view, $data = null, $options = null)
+    /**
+     * Load a view from the current module
+     * 
+     * @param string $view The name of the view file (relative to the module's Views folder)
+     * @param array|null $data Data to pass to the view
+     * @param array|null $options Additional options for rendering the view
+     * @return string Rendered view
+     */
+    function load_view($view, $data = null, $options = null)
     {
-        $moduleNamespace = config('Modules')->getModuleNamespace();
-        $view = $moduleNamespace . DIRECTORY_SEPARATOR . $view;
-        return view($view, $data, $options);
+        // Get the caller's namespace to detect the current module
+        $trace = debug_backtrace();
+        $callerClass = $trace[1]['class'];
+
+        // Get the module's namespace (e.g., App\Modules\Login\Controllers\LoginController)
+        $namespaceParts = explode('\\', $callerClass);
+        
+        // Detect the module name by getting the second part (after App\Modules)
+        if (isset($namespaceParts[2]) && strtolower($namespaceParts[1]) === 'modules') {
+            $moduleName = $namespaceParts[2];
+        } else {
+            // If not part of a module, fall back to a default namespace
+            $moduleName = 'App';
+        }
+
+        // Construct the full path for the view based on the module namespace
+        $viewPath = 'App\Modules\\' . $moduleName . '\Views\\' . $view;
+
+        // Call the default CI4 view() function with the constructed path
+        return view($viewPath, $data, $options);
     }
 }
