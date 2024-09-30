@@ -61,6 +61,8 @@ if (!function_exists('load_view')) {
      */
     function load_view($view, $data = null, $options = null)
     {
+        $data = $data ?? [];
+        $options = $options ?? [];
         // Check if the view belongs to another module by looking for a forward slash
         if (strpos($view, '/') !== false) {
             // Split the module name and the view name
