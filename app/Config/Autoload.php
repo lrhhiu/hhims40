@@ -112,5 +112,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['hmvc'];
+    public $helpers = ['HMVC'];
 }
