@@ -24,7 +24,7 @@
 namespace App\Modules\Login\Controllers;
 
 use App\Controllers\BaseController;
-use App\Modules\Login\Models\UserModel;
+//use App\Modules\Login\Models\UserModel;
 
 class LoginController extends BaseController
 {
@@ -36,7 +36,7 @@ class LoginController extends BaseController
 
     public function authenticate()
     {
-        $user_model = new UserModel();
+        $user_model = load_model('UserModel');
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
         
@@ -60,7 +60,7 @@ class LoginController extends BaseController
 
     public function sendResetLink()
     {
-        $user_model = new UserModel();
+        $user_model = load_model('UserModel');
         $email = $this->request->getPost('email');
         
         $user = $user_model->where('email_address', $email)->first();
@@ -84,7 +84,7 @@ class LoginController extends BaseController
 
     public function resetPassword()
     {
-        $user_model = new UserModel();
+        $user_model = load_model('UserModel');
         $token = $this->request->getPost('token');
         $new_password = $this->request->getPost('new_password');
         
