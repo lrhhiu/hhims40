@@ -1,0 +1,159 @@
+<?php
+/*
+ * Hospital Health Information Management System (HHIMS) v4.0
+ * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
+ * GNU General Public License (GPL) version 3
+ * 
+ * Created Date: 28-Sep-2024, 6:15:30 am
+ * Authors: Dr. Uditha Perera - Consultant in Health Informatics
+ *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
+ * Email: lrh.health.gov.lk@gmail.com
+ * ------------------------------------------------------------------------------------------------------------------
+ * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
+ * provided that the original authors are credited. Commercial use, including selling, licensing, or distributing
+ * the software for a fee, is strictly prohibited without prior written consent from the original authors.
+ * 
+ * This program is free software and is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>
+ * 
+ */
+
+namespace App\Modules\Login\Controllers;
+
+use App\Controllers\BaseController;
+//use App\Modules\Login\Models\UserModel;
+
+class LoginController extends BaseController
+{
+    public function index()
+    {
+        // Load login form
+        return load_view('login_form');
+    }
+
+    public function authenticate()
+    {
+        $user_model = load_model('UserModel');
+        $username = $this->request->getPost('username');
+        $password = $this->request->getPost('password');
+        
+        // Fetch user by username
+        $user = $user_model->where('username', $username)->first();
+
+        if ($user && password_verify($password, $user['Password'])) {
+            // Password matches, set user session
+            $this->setUserSession($user);
+            return redirect()->to(route_to('user-profile')); // Redirect to profile
+        } else {
+            // Invalid credentials
+            return redirect()->back()->with('error', 'Invalid login credentials');
+        }
+    }
+
+    public function forgotPasswordForm()
+    {
+        return load_view('forgot_password_form');
+    }
+
+    public function sendResetLink()
+    {
+        $user_model = load_model('UserModel');
+        $email = $this->request->getPost('email');
+        $user = $user_model->where('EmailAddress', $email)->first();
+        if ($user) {
+            $reset_token = bin2hex(random_bytes(50));  // Generate token
+            $user_model->update($user['UID'], [
+                'ResetToken' => $reset_token,
+                'TokenValidTime' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+            ]);
+            
+            $reset_link = base_url("auth/resetPassword/$reset_token");
+
+            // Send the reset link via email
+            $email_service = \Config\Services::email();
+    
+            $email_service->setFrom('lrh.health.gov.lk@gmail.com', 'LRH HHIMS');
+            $email_service->setTo($email);
+            $email_service->setSubject('Password Reset Request');
+            $email_service->setMessage("
+                <p>Dear {$user['FirstName']},</p>
+                <p>We received a request to reset your password. Click the link below to reset your password:</p>
+                <p><a href='{$reset_link}'>Reset Password</a></p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Thank you, <br> LRH HHIMS Team</p>
+            ");
+            if ($email_service->send()) {
+                return redirect()->back()->with('success', 'Password reset link has been sent to your email.');
+            } else {
+                // Log the error for debugging
+                log_message('error', $email_service->printDebugger(['headers', 'subject', 'body']));
+                return redirect()->back()->with('error', 'Failed to send password reset email.');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Email not found');
+        }
+    }
+
+    public function resetPasswordForm($token)
+    {
+        // Load reset password form with the token
+        return view('reset_password_form', ['token' => $token]);
+    }
+
+    public function resetPassword()
+    {
+        $user_model = load_model('UserModel');
+        $token = $this->request->getPost('token');
+        $new_password = $this->request->getPost('new_password');
+        
+        $user = $user_model->where('ResetToken', $token)->first();
+
+        if ($user) {
+            $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+            $user_model->update($user['UID'], ['Password' => $hashed_password, 'reset_token' => null]);
+            return redirect()->to('/login')->with('success', 'Password has been reset');
+        } else {
+            return redirect()->back()->with('error', 'Invalid reset token');
+        }
+    }
+
+    private function setUserSession($user)
+    {
+        $data = [
+            'uid' => $user['UID'],
+            'username' => $user['Username'],
+            'isLoggedIn' => true
+        ];
+        session()->set($data);
+        return true;
+    }
+
+    public function select()
+    {
+        // Load reset password form with the token
+        return view('reset_password_form', ['token' => $token]);
+    }
+
+    public function profile()
+    {
+        if (!session()->has('uid')) {
+            return redirect()->to('/login');
+        }
+        $userModel = new \App\Modules\Login\Models\UserModel();
+        $user = $userModel->find(session()->get('uid'));
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+        return view('App\Modules\Login\Views\profile', ['user' => $user]);
+    }
+
+    public function logout()
+    {
+        session()->destroy();
+        return redirect()->to('/login');
+    }
+
+}

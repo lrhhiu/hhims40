@@ -1,12 +1,12 @@
+<?php
 /*
  * Hospital Health Information Management System (HHIMS) v4.0
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
  * 
- * Created Date: 28-Aug-2024, 12:22:50 pm
+ * Created Date: 28-Sep-2024, 6:18:41 am
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
-            Dr. Malinda Wijeratne - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
  * ------------------------------------------------------------------------------------------------------------------
  * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
@@ -20,3 +20,35 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
+?>
+ <form action="/login/authenticate" method="post">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="button" id="show-password" onclick="togglePasswordVisibility()">Show Password</button>
+    </div>
+    
+    <div>
+        <button type="submit">Login</button>
+    </div>
+    
+    <div>
+        <a href="/login/forgot">Forgot Password?</a>
+    </div>
+</form>
+
+<script>
+function togglePasswordVisibility() {
+    var passwordField = document.getElementById('password');
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
+    }
+}
+</script>

@@ -1,12 +1,12 @@
+<?php
 /*
  * Hospital Health Information Management System (HHIMS) v4.0
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
  * 
- * Created Date: 28-Aug-2024, 12:22:50 pm
+ * Created Date: 28-Sep-2024, 6:22:07 am
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
-            Dr. Malinda Wijeratne - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
  * ------------------------------------------------------------------------------------------------------------------
  * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
@@ -20,3 +20,15 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
+
+
+namespace App\Modules\Login\Models;
+
+use CodeIgniter\Model;
+
+class UserModel extends Model
+{
+    protected $table = 'user';
+    protected $primaryKey = 'UID';
+    protected $allowedFields = ['FirstName', 'OtherName', 'Username', 'Password', 'EmailAddress', 'ResetToken','TokenValidTime'];
+}

@@ -130,3 +130,6 @@ nb-configuration.xml
 .env
 app/Config/Database.php
 app/Config/App.php
+
+# React dependancies
+/frontend/node_modules
