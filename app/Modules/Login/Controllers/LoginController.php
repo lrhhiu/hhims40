@@ -46,7 +46,7 @@ class LoginController extends BaseController
         if ($user && password_verify($password, $user['Password'])) {
             // Password matches, set user session
             $this->setUserSession($user);
-            return redirect()->to('/dashboard');  // Redirect to user dashboard
+            return redirect()->to(route_to('user-profile')); // Redirect to profile
         } else {
             // Invalid credentials
             return redirect()->back()->with('error', 'Invalid login credentials');
@@ -62,15 +62,36 @@ class LoginController extends BaseController
     {
         $user_model = load_model('UserModel');
         $email = $this->request->getPost('email');
-        
-        $user = $user_model->where('email_address', $email)->first();
+        $user = $user_model->where('EmailAddress', $email)->first();
         if ($user) {
             $reset_token = bin2hex(random_bytes(50));  // Generate token
-            $user_model->update($user['UID'], ['ResetToken' => $reset_token]);
+            $user_model->update($user['UID'], [
+                'ResetToken' => $reset_token,
+                'TokenValidTime' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+            ]);
             
-            // Send email with reset link (this part can be expanded based on your email configuration)
-            // Example reset link: https://your-site.com/login/reset/{token}
-            return redirect()->back()->with('success', 'Password reset link has been sent to your email');
+            $reset_link = base_url("auth/resetPassword/$reset_token");
+
+            // Send the reset link via email
+            $email_service = \Config\Services::email();
+    
+            $email_service->setFrom('lrh.health.gov.lk@gmail.com', 'LRH HHIMS');
+            $email_service->setTo($email);
+            $email_service->setSubject('Password Reset Request');
+            $email_service->setMessage("
+                <p>Dear {$user['FirstName']},</p>
+                <p>We received a request to reset your password. Click the link below to reset your password:</p>
+                <p><a href='{$reset_link}'>Reset Password</a></p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Thank you, <br> LRH HHIMS Team</p>
+            ");
+            if ($email_service->send()) {
+                return redirect()->back()->with('success', 'Password reset link has been sent to your email.');
+            } else {
+                // Log the error for debugging
+                log_message('error', $email_service->printDebugger(['headers', 'subject', 'body']));
+                return redirect()->back()->with('error', 'Failed to send password reset email.');
+            }
         } else {
             return redirect()->back()->with('error', 'Email not found');
         }
@@ -109,4 +130,30 @@ class LoginController extends BaseController
         session()->set($data);
         return true;
     }
+
+    public function select()
+    {
+        // Load reset password form with the token
+        return view('reset_password_form', ['token' => $token]);
+    }
+
+    public function profile()
+    {
+        if (!session()->has('uid')) {
+            return redirect()->to('/login');
+        }
+        $userModel = new \App\Modules\Login\Models\UserModel();
+        $user = $userModel->find(session()->get('uid'));
+        if (!$user) {
+            return redirect()->to('/login');
+        }
+        return view('App\Modules\Login\Views\profile', ['user' => $user]);
+    }
+
+    public function logout()
+    {
+        session()->destroy();
+        return redirect()->to('/login');
+    }
+
 }

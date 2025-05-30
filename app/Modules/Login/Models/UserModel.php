@@ -29,6 +29,6 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $table = 'user';
-    protected $primaryKey = 'uid';
-    protected $allowedFields = ['first_name', 'other_name', 'username', 'password', 'email_address', 'reset_token'];
+    protected $primaryKey = 'UID';
+    protected $allowedFields = ['FirstName', 'OtherName', 'Username', 'Password', 'EmailAddress', 'ResetToken','TokenValidTime'];
 }

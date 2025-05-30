@@ -6,6 +6,7 @@
  * Created Date: 28-Aug-2024, 12:22:50 pm
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
+            Dr. Malinda Wijeratne - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
  * ------------------------------------------------------------------------------------------------------------------
  * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
