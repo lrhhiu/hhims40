@@ -35,7 +35,7 @@ class AuthController extends BaseController
 
     public function authenticate()
     {
-        $user_model = load_model('User/UserModel');
+        $user_model = $this->load_model('User/UserModel');
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
         
@@ -59,7 +59,7 @@ class AuthController extends BaseController
 
     public function sendResetLink()
     {
-        $user_model = load_model('User/UserModel');
+        $user_model = $this->load_model('User/UserModel');
         $email = $this->request->getPost('email');
         $user = $user_model->where('EmailAddress', $email)->first();
         if ($user) {
@@ -104,7 +104,7 @@ class AuthController extends BaseController
 
     public function resetPassword()
     {
-        $user_model = load_model('User/UserModel');
+        $user_model = $this->load_model('User/UserModel');
         $token = $this->request->getPost('token');
         $new_password = $this->request->getPost('new_password');
         
