@@ -30,7 +30,13 @@ class Home extends BaseController
 {
     public function index()
     {
-        return $this->view();
+        if (!session()->has('uid')) {
+            // Not logged in, redirect to the login page
+            return redirect()->to('/auth');
+        } else {
+            // Logged in, redirect to the user profile page
+            return redirect()->to(route_to('user-profile'));
+        }
     }
 
     public function view(string $page = 'home')
