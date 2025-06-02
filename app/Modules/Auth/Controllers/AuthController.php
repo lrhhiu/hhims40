@@ -21,12 +21,11 @@
  * 
  */
 
-namespace App\Modules\Login\Controllers;
+namespace App\Modules\Auth\Controllers;
 
 use App\Controllers\BaseController;
-//use App\Modules\Login\Models\UserModel;
 
-class LoginController extends BaseController
+class AuthController extends BaseController
 {
     public function index()
     {
@@ -36,7 +35,7 @@ class LoginController extends BaseController
 
     public function authenticate()
     {
-        $user_model = load_model('UserModel');
+        $user_model = load_model('User/UserModel');
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
         
@@ -60,7 +59,7 @@ class LoginController extends BaseController
 
     public function sendResetLink()
     {
-        $user_model = load_model('UserModel');
+        $user_model = load_model('User/UserModel');
         $email = $this->request->getPost('email');
         $user = $user_model->where('EmailAddress', $email)->first();
         if ($user) {
@@ -105,7 +104,7 @@ class LoginController extends BaseController
 
     public function resetPassword()
     {
-        $user_model = load_model('UserModel');
+        $user_model = load_model('User/UserModel');
         $token = $this->request->getPost('token');
         $new_password = $this->request->getPost('new_password');
         
@@ -114,7 +113,7 @@ class LoginController extends BaseController
         if ($user) {
             $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
             $user_model->update($user['UID'], ['Password' => $hashed_password, 'reset_token' => null]);
-            return redirect()->to('/login')->with('success', 'Password has been reset');
+            return redirect()->to('/auth')->with('success', 'Password has been reset');
         } else {
             return redirect()->back()->with('error', 'Invalid reset token');
         }
@@ -137,23 +136,10 @@ class LoginController extends BaseController
         return view('reset_password_form', ['token' => $token]);
     }
 
-    public function profile()
-    {
-        if (!session()->has('uid')) {
-            return redirect()->to('/login');
-        }
-        $userModel = new \App\Modules\Login\Models\UserModel();
-        $user = $userModel->find(session()->get('uid'));
-        if (!$user) {
-            return redirect()->to('/login');
-        }
-        return view('App\Modules\Login\Views\profile', ['user' => $user]);
-    }
-
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login');
+        return redirect()->to('/auth');
     }
 
 }
