@@ -21,7 +21,7 @@
  * 
  */
 ?>
- <form action="/login/authenticate" method="post">
+ <form action="<?= base_url('auth/authenticate') ?>" method="post">
     <div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
@@ -38,7 +38,7 @@
     </div>
     
     <div>
-        <a href="/login/forgot">Forgot Password?</a>
+        <a href="<?= base_url('auth/forgot') ?>">Forgot Password?</a>
     </div>
 </form>
 
