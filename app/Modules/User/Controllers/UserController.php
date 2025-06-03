@@ -3,12 +3,12 @@
  * Hospital Health Information Management System (HHIMS) v4.0
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
- *
+ * 
  * This file is part of HHIMS. It is now part of the User module.
- *
+ * 
  * You should have received a copy of the GNU Affero General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>
- *
+ * 
  */
 
 namespace App\Modules\User\Controllers;

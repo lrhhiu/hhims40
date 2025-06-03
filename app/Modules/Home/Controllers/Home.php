@@ -32,7 +32,7 @@ class Home extends BaseController
     {
         if (!session()->has('uid')) {
             // Not logged in, redirect to the login page
-            return redirect()->to('/auth');
+            return redirect()->to('/auth'); 
         } else {
             // Logged in, redirect to the user profile page
             return redirect()->to(route_to('user-profile'));

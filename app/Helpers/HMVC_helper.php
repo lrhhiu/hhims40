@@ -72,7 +72,7 @@ if (!function_exists('load_view')) {
             $viewPath = 'App\Modules\\' . ucfirst($module) . '\Views\\' . $viewName;
         } else {
             // Get the caller's namespace to detect the current module
-            $trace = debug_backtrace();
+            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
             $moduleNamespace = get_module_namespace($trace);
 
             // Construct the full path for the current module's view
@@ -104,7 +104,7 @@ if (!function_exists('load_model')) {
             $modelNamespace = 'App\Modules\\' . ucfirst($module) . '\Models\\' . ucfirst($modelName);
         } else {
             // Get the caller's namespace to detect the current module
-            $trace = debug_backtrace();
+            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
             $moduleNamespace = get_module_namespace($trace);
 
             // Construct the full namespace for the current module's model (e.g., 'App\Modules\Login\Models\UserModel')
