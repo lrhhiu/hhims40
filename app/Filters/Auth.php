@@ -33,7 +33,7 @@ class Auth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (!session()->has('uid')) {
-            return redirect()->to('/login');
+            return redirect()->to('/auth');
         }
     }
 

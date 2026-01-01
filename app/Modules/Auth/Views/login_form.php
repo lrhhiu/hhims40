@@ -4,7 +4,7 @@
  * Copyright (c) 2024 Health Information Unit - Lady Ridgeway Hospital for Children
  * GNU General Public License (GPL) version 3
  * 
- * Created Date: 28-Sep-2024, 6:22:07 am
+ * Created Date: 28-Sep-2024, 6:18:41 am
  * Authors: Dr. Uditha Perera - Consultant in Health Informatics
  *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
  * Email: lrh.health.gov.lk@gmail.com
@@ -20,15 +20,35 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>
  * 
  */
+?>
+ <form action="<?= site_url('auth/authenticate') ?>" method="post">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="button" id="show-password" onclick="togglePasswordVisibility()">Show Password</button>
+    </div>
+    
+    <div>
+        <button type="submit">Login</button>
+    </div>
+    
+    <div>
+        <a href="<?= site_url('auth/forgot') ?>">Forgot Password?</a>
+    </div>
+</form>
 
-
-namespace App\Modules\Login\Models;
-
-use CodeIgniter\Model;
-
-class UserModel extends Model
-{
-    protected $table = 'user';
-    protected $primaryKey = 'UID';
-    protected $allowedFields = ['FirstName', 'OtherName', 'Username', 'Password', 'EmailAddress', 'ResetToken','TokenValidTime'];
+<script>
+function togglePasswordVisibility() {
+    var passwordField = document.getElementById('password');
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
+    }
 }
+</script>

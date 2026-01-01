@@ -21,7 +21,7 @@
  * 
  */
 ?>
-<form method="post" action="/login/reset">
+<form method="post" action="<?= site_url('auth/reset') ?>">
     <input type="hidden" name="token" value="<?php echo $token ?>">
     
     <label for="new_password">New Password</label>

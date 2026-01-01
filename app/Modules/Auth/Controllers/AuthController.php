@@ -21,12 +21,12 @@
  * 
  */
 
-namespace App\Modules\Login\Controllers;
+namespace App\Modules\Auth\Controllers;
 
 use App\Controllers\BaseController;
 //use App\Modules\Login\Models\UserModel;
 
-class LoginController extends BaseController
+class AuthController extends BaseController
 {
     public function index()
     {
@@ -114,7 +114,7 @@ class LoginController extends BaseController
         if ($user) {
             $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
             $user_model->update($user['UID'], ['Password' => $hashed_password, 'reset_token' => null]);
-            return redirect()->to('/login')->with('success', 'Password has been reset');
+            return redirect()->to('/auth')->with('success', 'Password has been reset');
         } else {
             return redirect()->back()->with('error', 'Invalid reset token');
         }
@@ -122,6 +122,7 @@ class LoginController extends BaseController
 
     private function setUserSession($user)
     {
+        session()->regenerate();
         $data = [
             'uid' => $user['UID'],
             'username' => $user['Username'],
@@ -140,20 +141,20 @@ class LoginController extends BaseController
     public function profile()
     {
         if (!session()->has('uid')) {
-            return redirect()->to('/login');
+            return redirect()->to('/auth');
         }
-        $userModel = new \App\Modules\Login\Models\UserModel();
+        $userModel = new \App\Modules\Auth\Models\UserModel();
         $user = $userModel->find(session()->get('uid'));
         if (!$user) {
-            return redirect()->to('/login');
+            return redirect()->to('/auth');
         }
-        return view('App\Modules\Login\Views\profile', ['user' => $user]);
+        return view('App\Modules\Auth\Views\profile', ['user' => $user]);
     }
 
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login');
+        return redirect()->to('/auth');
     }
 
 }

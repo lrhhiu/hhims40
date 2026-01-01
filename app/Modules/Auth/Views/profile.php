@@ -23,8 +23,9 @@
  */
 ?>
     <!-- User Profile Page -->
+    <h1>Welcome, <?= esc($user['FirstName']) ?>!</h1>
     <h2>User Profile</h2>
-    <a href="<?= site_url('login/logout') ?>" class="btn btn-danger" style="margin-top:20px;">Logout</a>
+    <a href="<?= site_url('auth/logout') ?>" class="btn btn-danger" style="margin-top:20px;">Logout</a>
     <table>
         <tr><th>Name:</th><td><?= esc($user['Title'] . ' ' . $user['FirstName'] . ' ' . $user['OtherName']) ?></td></tr>
         <tr><th>Username:</th><td><?= esc($user['Username']) ?></td></tr>
