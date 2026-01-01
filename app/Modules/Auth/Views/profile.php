@@ -1,39 +1,24 @@
-<?php
-/*
- * Hospital Health Information Management System (HHIMS) v4.0
- * Copyright (c) 2025 Health Information Unit - Lady Ridgeway Hospital for Children
- * GNU General Public License (GPL) version 3
- * 
- * Created Date: 30-May-2025, 3:17:37 am
- * Authors: Dr. Uditha Perera - Consultant in Health Informatics
- *          Dr. Rizan Hafrath - Medical Officer in Health Informatics
- *          Dr. Malinda Wijeratne - Medical Officer in Health Informatics
- * Email: lrh.health.gov.lk@gmail.com
- * ------------------------------------------------------------------------------------------------------------------
- * Permission is hereby granted to use, modify, and distribute this software for personal and non-commercial purposes,
- * provided that the original authors are credited. Commercial use, including selling, licensing, or distributing
- * the software for a fee, is strictly prohibited without prior written consent from the original authors.
- * 
- * This program is free software and is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * 
- * You should have received a copy of the GNU Affero General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>
- * 
- */
-?>
-    <!-- User Profile Page -->
-    <h1>Welcome, <?= esc($user['FirstName']) ?>!</h1>
-    <h2>User Profile</h2>
-    <a href="<?= site_url('auth/logout') ?>" class="btn btn-danger" style="margin-top:20px;">Logout</a>
-    <table>
-        <tr><th>Name:</th><td><?= esc($user['Title'] . ' ' . $user['FirstName'] . ' ' . $user['OtherName']) ?></td></tr>
-        <tr><th>Username:</th><td><?= esc($user['Username']) ?></td></tr>
-        <tr><th>Email:</th><td><?= esc($user['EmailAddress']) ?></td></tr>
-        <tr><th>NIC:</th><td><?= esc($user['NIC']) ?></td></tr>
-        <tr><th>Date of Birth:</th><td><?= esc($user['DateOfBirth']) ?></td></tr>
-        <tr><th>Gender:</th><td><?= esc($user['Gender']) ?></td></tr>
-        <tr><th>Designation:</th><td><?= esc($user['Designation']) ?></td></tr>
-        <tr><th>Telephone:</th><td><?= esc($user['Telephone']) ?></td></tr>
-        <tr><th>Status:</th><td><?= esc($user['Status']) ?></td></tr>
-    </table>
+<?= $this->extend('App\Views\layouts\main') ?>
+
+<?= $this->section('title') ?>User Profile<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+    <div class="card">
+        <h1>Welcome, <?= esc($user['FirstName']) ?>!</h1>
+        <h2>User Profile</h2>
+        
+        <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Name:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Title'] . ' ' . $user['FirstName'] . ' ' . $user['OtherName']) ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Username:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Username']) ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Email:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['EmailAddress']) ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">NIC:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['NIC'] ?? '') ?></td></tr> <!-- Added Null Coalesce check if column missing -->
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Date of Birth:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['DateOfBirth'] ?? '') ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Gender:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Gender'] ?? '') ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Designation:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Designation'] ?? '') ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Telephone:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Telephone'] ?? '') ?></td></tr>
+            <tr><th style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">Status:</th><td style="padding: 10px; border-bottom: 1px solid #ddd;"><?= esc($user['Status'] ?? 'Active') ?></td></tr>
+        </table>
+        
+        <a href="<?= site_url('auth/logout') ?>" class="btn btn-primary" style="margin-top:20px;">Logout</a>
+    </div>
+<?= $this->endSection() ?>

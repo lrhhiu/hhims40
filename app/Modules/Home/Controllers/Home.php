@@ -30,7 +30,7 @@ class Home extends BaseController
 {
     public function index()
     {
-        return $this->view();
+        return redirect()->to('home/dashboard');
     }
 
     public function view(string $page = 'home')
@@ -42,6 +42,10 @@ class Home extends BaseController
         }
 
         $data['title'] = ucfirst($page);
+
+        if ($page === 'dashboard') {
+            return view('App\Modules\Home\Views\pages\\' . $page, $data);
+        }
 
         return view('App\Modules\Home\Views\templates/header', $data)
             . view('App\Modules\Home\Views/pages/' . $page)
